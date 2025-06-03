@@ -1,0 +1,23 @@
+﻿@page
+@model LCC_BasicInventorySystem.Pages.Products.DeleteProductModel
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Delete a Product</h2>
+
+    <form method="post" class="card p-4 shadow-lg">
+        <div class="mb-3">
+            <label class="form-label">Product ID:</label>
+            <input type="text" asp-for="ProductId" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-danger w-100">Delete Product</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-info mt-3 text-center">@Model.Message</div>
+    }
+</div>

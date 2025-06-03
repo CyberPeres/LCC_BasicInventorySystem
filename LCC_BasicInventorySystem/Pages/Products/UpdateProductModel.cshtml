@@ -1,0 +1,44 @@
+﻿@page
+@model LCC_BasicInventorySystem.Pages.Products.UpdateProductModel
+@{
+    ViewData["Title"] = "Update Product Quantity";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Modify Stock</h2>
+    @if (string.IsNullOrEmpty(Model.ProductId))
+    {
+        <!-- Lookup Form (Only Visible Before Product Selection) -->
+        <form method="get" asp-page="UpdateProduct">
+            <label class="form-label">Enter Product ID:</label>
+            <input type="text" name="productId" class="form-control" required>
+            <button type="submit" class="btn btn-info w-100 mt-2">Lookup Product</button>
+        </form>
+    }
+    else
+    {
+        <!-- Display Product ID Once Lookup is Done -->
+        <div class="mb-3">
+            <label class="form-label">Product ID:</label>
+            <input type="text" asp-for="ProductId" class="form-control" readonly>
+        </div>
+
+        <!-- Stock Adjustment Form -->
+        <form method="post">
+            <input type="hidden" asp-for="ProductId"> <!-- Keep Product ID Hidden for Submission -->
+
+            <label class="form-label">Original Quantity:</label>
+            <input type="number" asp-for="CurrentQuantity" class="form-control" readonly>
+
+            <label class="form-label">Adjust Quantity:</label>
+            <input type="number" asp-for="AdjustAmount" class="form-control" min="1" required>
+
+            <button type="submit" name="action" value="increase" class="btn btn-success w-100 mt-2">Increase Stock</button>
+            <button type="submit" name="action" value="decrease" class="btn btn-danger w-100 mt-2">Decrease Stock</button>
+        </form>
+    }
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-info mt-3 text-center">@Model.Message</div>
+    }
+</div>

@@ -1,0 +1,71 @@
+﻿@page
+@model LCC_BasicInventorySystem.Pages.Products.SearchProductsModel
+@{
+    ViewData["Title"] = "Search & Filter Products";
+}
+
+<script>
+    async function searchProducts() {
+        const name = document.getElementById("searchName").value;
+        const minQty = document.getElementById("minQty").value;
+        const maxQty = document.getElementById("maxQty").value;
+
+        const response = await fetch(`/Products/SearchProducts?searchName=${name}&minQty=${minQty}&maxQty=${maxQty}`);
+        const data = await response.text();
+
+        document.getElementById("searchResults").innerHTML = data;
+    }
+</script>
+
+
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Search & Filter Products</h2>
+
+    <form method="get" class="card p-4 shadow-lg">
+        <div class="mb-3">
+            <label class="form-label">Product Name (Partial Match):</label>
+            <input type="text" asp-for="SearchName" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Min Quantity:</label>
+            <input type="number" asp-for="MinQty" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Max Quantity:</label>
+            <input type="number" asp-for="MaxQty" min="0" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+    </form>
+
+    @if (Model.SearchResults?.Any() == true)
+    {
+        <h3 class="text-center mt-4">Results:</h3>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.SearchResults)
+                {
+                    <tr>
+                        <td>@product.Id</td>
+                        <td>@product.Name</td>
+                        <td>@product.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.SearchResults != null)
+    {
+        <div class="alert alert-warning text-center mt-3">No matching products found.</div>
+    }
+</div>

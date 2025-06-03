@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Basic Inventory System (B.I.S)</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/LCC_BasicInventorySystem.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Basic Inventory System (B.I.S.)</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                @* TODO REMOVE WHEN PROVEN <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between"> *@
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <div>
+                                <a href="/Index" class="btn btn-primary">Main</a>
+                                <a href="/Products/AddProduct" class="btn btn-primary">Add Product</a>
+                                <a href="/Products/UpdateProductModel" class="btn btn-primary">Update Product Quantity</a>
+                                <a href="/Products/DeleteProductModel" class="btn btn-primary">Delete Product</a>
+                                <a href="/Products/SearchProducts" class="btn btn-primary">Search Products</a>
+                            </div>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @inject LCC_BasicInventorySystem.Services.InventoryService InventoryService
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    @{
+        var currentPath = HttpContextAccessor.HttpContext.Request.Path.Value.ToLower();
+        var hideInventory = currentPath.Contains("searchproducts");
+    }
+
+    @if (!hideInventory) //Hide when on SearchProducts page
+    {
+        <div class="container mt-4">
+            <h4>Current Inventory</h4>
+
+            @if (InventoryService.GetAllProducts().Any())
+            {
+                <table class="table table-sm table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in InventoryService.GetAllProducts())
+                        {
+                            <tr>
+                                <td>@product.Id</td>
+                                <td>@product.Name</td>
+                                <td>@product.Quantity</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center">No products in inventory.</div>
+            }
+        </div>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
